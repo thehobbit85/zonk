@@ -1,25 +1,17 @@
 var mongoose = require('mongoose');
 var jsonfile = require('jsonfile');
 
-var models = {};
-
 //Public Functions
-var init = function() {
-  
-  var settings = jsonfile.readFileSync(__dirname + '/settings.json');
-
-  var mongoCollectionName = settings.mongoCollectionName;
-  var mongoHost = settings.mongoHost;
-  var mongoPort = settings.mongoPort;
-  var datamodel = [{
+function DB() {
+  this.models = [];
+  settings = jsonfile.readFileSync(__dirname + '/settings.json');
+  mongoCollectionName = settings.mongoCollectionName;
+  mongoHost = settings.mongoHost;
+  mongoPort = settings.mongoPort;
+  datamodels = [{
     "Name" : "saves",
     "Schema" : {
-      "savename" : {
-        "type": "String",
-        "index": {
-          "unique": true
-        }
-      },
+      "savename" : "String",
       "inventory" : "Mixed",
       "score" : "Number",
       "currentRoom" : "Mixed",
@@ -27,26 +19,30 @@ var init = function() {
       "game" : "String"
     }
   }]
-
-  if (datamodel && mongoCollectionName && mongoHost && mongoPort) {
+  var that = this;
+  if (datamodels && mongoCollectionName && mongoHost && mongoPort) {
+    
     mongoose.connect(mongoHost + ':' + mongoPort + '/' + mongoCollectionName);
+    
+    var mon = mongoose.connection;
+    
+    mon.on('error', console.error.bind(console, 'connection error:'));
+    mon.once('open', function() {
 
-    var db = mongoose.connection;
+      datamodels.forEach(function(datamodel) {
+        if (datamodel && datamodel.Name && datamodel.Schema) {
+          
+          var name = datamodel.Name;
+          var schema = mongoose.Schema(datamodel.Schema);
 
-    db.on('error', console.error.bind(console, 'connection error:'));
-
-    db.once('open', function () {
-
-      init_data_base(datamodel);
-
-      //test(mongoose);
+          that.models[name] = mongoose.model(name, schema);
+        }
+      });
     });
   }
-
-  return null;
 }
 
-var close = function() {
+DB.prototype.close = function() {
 
   mongoose.connection.close();
 
@@ -55,64 +51,29 @@ var close = function() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-var init_data_base = function(datamodels) {
+DB.prototype.save = function(name, condition, callback) {
 
-  datamodels.forEach(function(datamodel) {
-    if (datamodel && datamodel.Name && datamodel.Schema) {
-      
-      var name = datamodel.Name;
-      var schema = mongoose.Schema(datamodel.Schema);
-      var model = mongoose.model(name, schema);
-      var name = name.toLowerCase();
-    
-      models[name] = model;
+  var model = this.models[name];
+  if (!model) { 
+    return callback('error: no model');
+  }
 
-      init_data (name, datamodel, function(err, result) {
-        if (err) console.log(err);
+  return model.update(condition, condition, {upsert: true}, callback);
+}
 
-      });
-    }
+DB.prototype.restore = function(name, condition, callback) {
+
+  var model = this.models[name];
+  if (!model) { 
+    return callback('error: no model');
+  }
+
+  return model.findOne(condition,function (err, data) {
+    if (err) return callback(err);
+    if (!data) return callback('no Save');
+    return callback(null,data);
   });
-  
-  return null;
 }
 
-var init_data = function(name, datamodel, callback) {
-
-  if ((datamodel.Data != undefined) && datamodel.hasOwnProperty('Data'))
-  {
-    var data = datamodel.Data;
-    data.forEach(function(doc) {
-      upsert(name, doc, doc, callback);
-    });
-  }
-}
-
-
-var upsert = function(name, condition, insert, callback) {
-
-  var model = models[name];
-  if (!model) { 
-    return callback('error: no model');
-  }
-
-  return model.update(condition, insert, {upsert: true}, callback);
-}
-
-var find = function(name, condition, callback) {
-
-  var model = models[name];
-  if (!model) { 
-    return callback('error: no model');
-  }
-
-  return model.findOne(condition,callback);
-}
-
-module.exports = {
-  init : init,
-  close : close,
-  upsert : upsert,
-  find : find
-}
+module.exports = new DB();
 

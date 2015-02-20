@@ -1,12 +1,13 @@
-var utils = require('./utils.js');
+"use strict";
+var utils = require(__dirname + '/utils.js');
 var inquirer = require("inquirer");
 var Table = require('cli-table');
-var db = require('./db.js');
+var db = require(__dirname + '/DB.js');
+var processLineToBlock = require(__dirname + '/processLineToBlock.js')
 
 var c = utils.colors;
 
 function Game() {
-  db.init();
   this.game = "";
   this.inventory = {};
   this.score = 0;
@@ -58,7 +59,6 @@ Game.prototype.kickOff = function(name, meta) {
   }, 2999); // let the user read the intro and help text + Effect of a loading
 
 };
-
 
 Game.prototype.executer = function(room) {
   var _r = {},
@@ -114,23 +114,25 @@ Game.prototype.executer = function(room) {
 
   self.currentRoom = room;
 
+  var text = processLineToBlock(_r.description,80,80);
+  
   if ((_r.isExitRoom && _r.isExitRoom.toString()) === "true") {
-    console.log(_r.description);
+    console.log(text);
     return false;
     process.exit(0);
   }
 
-  self.prompt(_r.description, function(response) {
-    if (response.input.trim().length == 0) {
+  self.prompt(text, function(response) {
+    if (response.command.trim().length == 0) {
       console.log(c.red('You can do better than that.. '));
       self.executer(room);
-    } else if (self.keyWords.indexOf(response.input) >= 0 || self.keyWords.indexOf(response.input.split(' ')[0]) >= 0) { // check for keywords
-      self.processKeyword(response.input, room, _r);
-    } else if (_r[response.input]) { // direct commands
-      self.feeder(_r[response.input]);
+    } else if (self.keyWords.indexOf(response.command) >= 0 || self.keyWords.indexOf(response.command.split(' ')[0]) >= 0) { // check for keywords
+      self.processKeyword(response.command, room, _r);
+    } else if (_r[response.command]) { // direct commands
+      self.feeder(_r[response.command]);
     } else {
       var filterWords = ['fuck', 'crap', 'shit'];
-      if (filterWords.indexOf(response.input) >= 0) {
+      if (filterWords.indexOf(response.command) >= 0) {
         var msgs = [
           'huh!!',
           'Yeah.. and what!!',
@@ -181,7 +183,7 @@ Game.prototype.feeder = function(roomName) {
 Game.prototype.prompt = function(text, callback) {
   var p = {
     type: "input",
-    name: "input",
+    name: "command",
     message: text ? text : 'The Room description is empty :('
   };
   console.log('\n');
@@ -193,7 +195,7 @@ Game.prototype.processKeyword = function(response, room, _r) {
   if (response == 'help') {
     self.help();
   } else if (response == 'info') {
-    console.log(_r.contextualHelp || _r.description);
+    console.log(_r.contextualHelp || processLineToBlock(_r.description));
   } else if (response == 'inventory') {
     self.printInventory();
   } else if (response == 'score') {
@@ -261,7 +263,6 @@ Game.prototype.printInventory = function() {
 };
 
 Game.prototype.save = function(savename) {
-  console.log(savename);
   var save_data = { 
     savename : this.game + savename,
     inventory : this.inventory,
@@ -270,22 +271,29 @@ Game.prototype.save = function(savename) {
     keyWords : this.keyWords,
     game : this.game,
   };
-  db.upsert("saves",save_data,save_data,function (err) {
+  db.save("saves",save_data,function (err) {
     if (err) console.log('Save failed, try again: ' + err);
     else console.log('Saved');
   }); 
 };
 
 Game.prototype.restore = function(savename) {
-  db.find("saves",{savename : this.game + savename},function(err,data) {
+  var that = this;
+  db.restore("saves",{savename : this.game + savename},function(err,data) {
     if (err) console.log("No saved game : " + err);
     else { 
-      this.inventory = data.inventory;
-      this.score = data.score;
-      this.currentRoom = data.currentRoom; 
-      this.keyWords = data.keyWords;
-      console.log(this);
-      this.kickOff(this.game,this.meta);
+      console.log('Loading Save '+ savename +'...');
+      that.inventory = data.inventory;
+      that.score = data.score;
+      that.currentRoom = data.currentRoom; 
+      that.keyWords = data.keyWords;
+      if (that.game === data.game) {
+        console.log('Done loading. Continue playing');
+        that.executer(that.currentRoom);
+      }
+      else {
+        console.log("This save is from a different game so can't load");
+      }
     };
   })
 };

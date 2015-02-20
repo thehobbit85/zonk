@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-var require('./src/Game.js');
+var game = require(__dirname + '/../start.js');

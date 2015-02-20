@@ -1,7 +1,8 @@
+"use strict";
 var fs = require('fs');
 var path = require('path');
 var inquirer = require("inquirer");
-var utils = require('./src/utils.js');
+var utils = require(__dirname + '/src/utils.js');
 var c = utils.colors;
 
 console.log(c.boldred(" ** Text Based Adventure Games ** "), '\n');
