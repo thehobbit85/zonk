@@ -1,9 +1,7 @@
-#!/usr/bin/env node
-
 var fs = require('fs');
 var path = require('path');
 var inquirer = require("inquirer");
-var utils = require('../src/utils');
+var utils = require('./src/utils.js');
 var c = utils.colors;
 
 console.log(c.boldred(" ** Text Based Adventure Games ** "), '\n');
@@ -11,11 +9,11 @@ console.log(c.cyan(" Developed for the people with the  world's most powerful gr
 
 console.log(c.green('Pick a Game to play'));
 
-var gameScripts = fs.readdirSync(__dirname+'/../Games');
+var gameScripts = fs.readdirSync(__dirname+'/Games');
 var gameData =  [];
 
 gameScripts.forEach(function(p){
-    var p = __dirname+'/../Games/'+p;
+    var p = __dirname+'/Games/'+p;
     var f = JSON.parse(fs.readFileSync(p, 'UTF-8'));
     
     gameData.push({
@@ -32,6 +30,6 @@ inquirer.prompt(
         choices: gameData
     }],
     function(answers) {
-        var Game = require(__dirname+'/../src/Game');
+        var Game = require(__dirname+'/src/Game.js');
         Game.play(answers.game);
     });

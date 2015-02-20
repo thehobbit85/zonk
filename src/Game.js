@@ -1,19 +1,25 @@
-var utils = require('./utils');
+var utils = require('./utils.js');
 var inquirer = require("inquirer");
 var Table = require('cli-table');
+var db = require('./db.js');
 
 var c = utils.colors;
 
 function Game() {
+  db.init();
+  this.game = "";
   this.inventory = {};
   this.score = 0;
   this.currentRoom = {};
+  this.meta = {};
   this.keyWords = ['help', 'info', 'inventory', 'score', 'save', 'restore', 'throw', 'drop', 'take', 'pick', 'use', 'move', 'nothing'];
 }
 
 Game.prototype.play = function(gsPath) { //Game Script Path
   var script = utils.parser(gsPath);
+  this.game = script.name;
   this.rooms = script.rooms;
+  this.meta = script.meta;
   this.kickOff(script.name, script.meta);
 };
 
@@ -192,10 +198,10 @@ Game.prototype.processKeyword = function(response, room, _r) {
     self.printInventory();
   } else if (response == 'score') {
     console.log('Your score is ' + self.score + '\n');
-  } else if (response == 'save') {
-    self.save();
-  } else if (response == 'restore') {
-    self.restore();
+  } else if (response.split(" ")[0] == 'save') {
+    self.save(response.split(" ")[1]);
+  } else if (response.split(" ")[0] == 'restore') {
+    self.restore(response.split(" ")[1]);
   } else if (response.split(" ")[0] == 'pick' || response.split(" ")[0] == 'take') {
     self.pick(_r, response.split(" ")[1]);
   } else if (response.split(" ")[0] == 'throw' || response.split(" ")[0] == 'drop') {
@@ -254,12 +260,34 @@ Game.prototype.printInventory = function() {
   console.log(table.toString(), '\n');
 };
 
-Game.prototype.save = function() {
-  // save the game state
+Game.prototype.save = function(savename) {
+  console.log(savename);
+  var save_data = { 
+    savename : this.game + savename,
+    inventory : this.inventory,
+    score : this.score,
+    currentRoom : this.currentRoom, 
+    keyWords : this.keyWords,
+    game : this.game,
+  };
+  db.upsert("saves",save_data,save_data,function (err) {
+    if (err) console.log('Save failed, try again: ' + err);
+    else console.log('Saved');
+  }); 
 };
 
-Game.prototype.restore = function() {
-  // restore the game state
+Game.prototype.restore = function(savename) {
+  db.find("saves",{savename : this.game + savename},function(err,data) {
+    if (err) console.log("No saved game : " + err);
+    else { 
+      this.inventory = data.inventory;
+      this.score = data.score;
+      this.currentRoom = data.currentRoom; 
+      this.keyWords = data.keyWords;
+      console.log(this);
+      this.kickOff(this.game,this.meta);
+    };
+  })
 };
 
 module.exports = new Game();
