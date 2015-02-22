@@ -1,7 +1,4 @@
-# CLI Adventure Games [![NPM version](https://badge-me.herokuapp.com/api/npm/cli-adventure-games.png)](http://badges.enytc.com/for/npm/cli-adventure-games) [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/arvindr21/cli-adventure-games/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
-
-[![NPM](https://nodei.co/npm/cli-adventure-games.png?downloads=true&stars=true)](https://nodei.co/npm/cli-adventure-games/)
+# Zonk 
 
 Text Based Adventure Games built with Node.js
 
@@ -26,7 +23,7 @@ $ zonk
 
 ## For players
 Pick a Game script to start off. 
-![player demo](https://raw.githubusercontent.com/arvindr21/cli-adventure-games/master/demos/demo_player.gif)
+![player demo](https://raw.githubusercontent.com/thehobbit85/zonk/master/demos/demo_player.gif)
 
 You will be shown help instructions before you start the game. At any point, you can type `help` to get help.
 
@@ -43,14 +40,13 @@ You can either contribute to the Game Script, by building one of your own games 
 
 To create your own game script, please refer to the `Maya.json` in the `Games` folder.
 
-PS : Please check with the me/contributors before updating the engine.
-
 ### Todos :  
+* [ ] After restoring a game there is a bug that causes problems with input
 * [ ] Player interaction with the objects (_use swords or rocket launchers_)
 * [ ] Implement Lexical processing of commands
 * [ ] Build game scripts for Zork I, Zork II and Zork III
 
-Special thanks to Anurag Jain & Jayesh Choudhari for their advice and contributions. 
+Based on CLI Adventure Games : https://github.com/arvindr21/cli-adventure-games
 
 ## License
 
