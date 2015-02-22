@@ -30,39 +30,48 @@ You will be shown help instructions before you start the game. At any point, you
 If you type 'save' you will create a quick-save which will save the current game.
 If you type 'save "savename"' you will create a specific save file.
 
-Type 'restore' to load the quick-save game and 'restore "savename"' to load a specific save file.
+Type 'restore' to load the quick-save game or 'restore "savename"' to load a specific save.
 
+## Contribute
 
-## For developers
+<b>You can contribute to the Game Script, by building your own games or you can contribute to the engine, by marking down some of the TODO's or you can do both or any other contributing you feel like doing </b>
+
+### For game designers
+
 There is a Game Script, that is fed into the Game Engine. The script file is a JSON, that consists of how the game should work. The game engine describes the scenarios listed in the JSON to the player, takes his input and acts accordingly.
-
-### Saving mechanism:
-There are 2 options regarding the saving and restoring of games:
-1. A local json file, if this is option you want, put the next line in the start.js file:
-  var db = require(__dirname + '/src/DataBases/fileSystem.js');
-2. A remote saving system based on mongoDB, if this the option you want, use the next line:
-  var db = require(__dirname + '/src/DataBases/mongodb.js');
-
-In order to use the mongoDB option you need to create a file named: mongodb-settings.json and put it in src/DataBases and add the next information to the file:
-{
-  "mongoCollectionName" : "the collection name to hold the game saved data",
-  "mongoHost" : "your mongoDB host",
-  "mongoPort" : "your mongoDB port"
-}
-
-### Todos :  
-* [ ] After restoring a game there is a bug that causes problems with input
-* [ ] Player interaction with the objects (_use swords or rocket launchers_)
-* [ ] Implement Lexical processing of commands
-* [ ] Add the ability to choose the transport layer for the game engine (CLI, REST, etc...)
-
-You can either contribute to the Game Script, by building one of your own games or you can contribute to the engine as well. 
 
 To create your own game script, please refer to the `Maya.json` in the `Games` folder.
 
-Based on CLI Adventure Games : https://github.com/arvindr21/cli-adventure-games
+### For developers
+
+#### Saving mechanism:
+There are currently 2 options regarding the saving and restoring of games.
+1. A local json file, if this is option you want, put the next line in the start.js file:
+  var db = require(__dirname + '/src/DataBases/fileSystem.js');
+2. A remote mongoDB saving system, if this the option you want, put the next line: 
+var db = require(__dirname + '/src/DataBases/mongodb.js');
+
+In order to use the mongoDB option you need to create the file mongodb-settings.json and put it in src/DataBases with the following data:
+
+```json
+{
+  "mongoCollectionName" : "collection name",
+  "mongoHost" : "your mongoDB host",
+  "mongoPort" : "your mongoDB port"
+}
+```
+
+#### Todos :  
+* [ ] After restoring a game there is a bug that causes problems with input
+* [ ] Add more database options for saving games.
+* [ ] Create a better interface for choosing the database.
+* [ ] Player interaction with the objects (_use swords or rocket launchers_)
+* [ ] Implement Lexical processing of commands
+* [ ] Add the ability to choose the transport layer for the game engine (CLI, REST, WebUI, etc...)
 
 ## License
+
+Based on CLI Adventure Games : [cli-adventure-game](https://github.com/arvindr21/cli-adventure-games)
 
 Copyright (c) 2015 Eliran Zach, contributors.
 
