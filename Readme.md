@@ -36,15 +36,29 @@ Type 'restore' to load the quick-save game and 'restore "savename"' to load a sp
 ## For developers
 There is a Game Script, that is fed into the Game Engine. The script file is a JSON, that consists of how the game should work. The game engine describes the scenarios listed in the JSON to the player, takes his input and acts accordingly.
 
-You can either contribute to the Game Script, by building one of your own games or you can contribute to the engine as well. 
+### Saving mechanism:
+There are 2 options regarding the saving and restoring of games:
+1. A local json file, if this is option you want, put the next line in the start.js file:
+  var db = require(__dirname + '/src/DataBases/fileSystem.js');
+2. A remote saving system based on mongoDB, if this the option you want, use the next line:
+  var db = require(__dirname + '/src/DataBases/mongodb.js');
 
-To create your own game script, please refer to the `Maya.json` in the `Games` folder.
+In order to use the mongoDB option you need to create a file named: mongodb-settings.json and put it in src/DataBases and add the next information to the file:
+{
+  "mongoCollectionName" : "the collection name to hold the game saved data",
+  "mongoHost" : "your mongoDB host",
+  "mongoPort" : "your mongoDB port"
+}
 
 ### Todos :  
 * [ ] After restoring a game there is a bug that causes problems with input
 * [ ] Player interaction with the objects (_use swords or rocket launchers_)
 * [ ] Implement Lexical processing of commands
-* [ ] Build game scripts for Zork I, Zork II and Zork III
+* [ ] Add the ability to choose the transport layer for the game engine (CLI, REST, etc...)
+
+You can either contribute to the Game Script, by building one of your own games or you can contribute to the engine as well. 
+
+To create your own game script, please refer to the `Maya.json` in the `Games` folder.
 
 Based on CLI Adventure Games : https://github.com/arvindr21/cli-adventure-games
 
