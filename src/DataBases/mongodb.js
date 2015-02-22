@@ -4,7 +4,7 @@ var jsonfile = require('jsonfile');
 //Public Functions
 function DB() {
   this.models = [];
-  settings = jsonfile.readFileSync(__dirname + '/settings.json');
+  settings = jsonfile.readFileSync(__dirname + '/mongodb-settings.json');
   mongoCollectionName = settings.mongoCollectionName;
   mongoHost = settings.mongoHost;
   mongoPort = settings.mongoPort;
@@ -51,22 +51,23 @@ DB.prototype.close = function() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-DB.prototype.save = function(name, condition, callback) {
+DB.prototype.save = function(save_data, callback) {
 
-  var model = this.models[name];
+  var model = this.models['saves'];
   if (!model) { 
     return callback('error: no model');
   }
 
-  return model.update(condition, condition, {upsert: true}, callback);
+  return model.update(save_data, save_data, {upsert: true}, callback);
 }
 
-DB.prototype.restore = function(name, condition, callback) {
+DB.prototype.restore = function(savename, callback) {
 
-  var model = this.models[name];
+  var model = this.models['saves'];
   if (!model) { 
     return callback('error: no model');
   }
+  var condition = {savename:savename};
 
   return model.findOne(condition,function (err, data) {
     if (err) return callback(err);

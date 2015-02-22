@@ -16,12 +16,12 @@ _Pull requests and Game Scripts welcome!_
 ## Installation
 Run 
 ```bash
-$ [sudo] npm install -g cli-adventure-games
+$ [sudo] npm install -g zonk
 ```
 
 To play, execute
 ```bash
-$ cli-adventure-games
+$ zonk
 ```
 
 ## For players
@@ -29,6 +29,11 @@ Pick a Game script to start off.
 ![player demo](https://raw.githubusercontent.com/arvindr21/cli-adventure-games/master/demos/demo_player.gif)
 
 You will be shown help instructions before you start the game. At any point, you can type `help` to get help.
+
+If you type 'save' you will create a quick-save which will save the current game.
+If you type 'save "savename"' you will create a specific save file.
+
+Type 'restore' to load the quick-save game and 'restore "savename"' to load a specific save file.
 
 
 ## For developers
@@ -41,7 +46,6 @@ To create your own game script, please refer to the `Maya.json` in the `Games` f
 PS : Please check with the me/contributors before updating the engine.
 
 ### Todos :  
-* [ ] Save & Restore Game
 * [ ] Player interaction with the objects (_use swords or rocket launchers_)
 * [ ] Implement Lexical processing of commands
 * [ ] Build game scripts for Zork I, Zork II and Zork III
@@ -50,7 +54,7 @@ Special thanks to Anurag Jain & Jayesh Choudhari for their advice and contributi
 
 ## License
 
-Copyright (c) 2014 Arvind Ravulavaru, contributors.
+Copyright (c) 2015 Eliran Zach, contributors.
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

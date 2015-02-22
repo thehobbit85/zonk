@@ -2,12 +2,11 @@
 var utils = require(__dirname + '/utils.js');
 var inquirer = require("inquirer");
 var Table = require('cli-table');
-var db = require(__dirname + '/DB.js');
 var processLineToBlock = require(__dirname + '/processLineToBlock.js')
-
 var c = utils.colors;
 
-function Game() {
+function Game(database) {
+  this.db = database;
   this.game = "";
   this.inventory = {};
   this.score = 0;
@@ -263,15 +262,21 @@ Game.prototype.printInventory = function() {
 };
 
 Game.prototype.save = function(savename) {
+  if (savename) 
+    savename = this.game + " - " + savename;
+  else
+    savename = this.game + " - quicksave";
+
   var save_data = { 
-    savename : this.game + savename,
+    savename : savename,
     inventory : this.inventory,
     score : this.score,
     currentRoom : this.currentRoom, 
     keyWords : this.keyWords,
     game : this.game,
   };
-  db.save("saves",save_data,function (err) {
+
+  this.db.save(save_data,function (err) {
     if (err) console.log('Save failed, try again: ' + err);
     else console.log('Saved');
   }); 
@@ -279,7 +284,12 @@ Game.prototype.save = function(savename) {
 
 Game.prototype.restore = function(savename) {
   var that = this;
-  db.restore("saves",{savename : this.game + savename},function(err,data) {
+  if (savename) 
+    savename = this.game + " - " + savename;
+  else
+    savename = this.game + " - quicksave";
+
+  this.db.restore(savename,function(err,data) {
     if (err) console.log("No saved game : " + err);
     else { 
       console.log('Loading Save '+ savename +'...');
@@ -298,4 +308,4 @@ Game.prototype.restore = function(savename) {
   })
 };
 
-module.exports = new Game();
+module.exports = Game;

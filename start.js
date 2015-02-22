@@ -4,6 +4,8 @@ var path = require('path');
 var inquirer = require("inquirer");
 var utils = require(__dirname + '/src/utils.js');
 var c = utils.colors;
+var db = require(__dirname + '/src/DataBases/fileSystem.js');
+var gameEngine = require(__dirname+'/src/Game.js');
 
 console.log(c.boldred(" ** Text Based Adventure Games ** "), '\n');
 console.log(c.cyan(" Developed for the people with the  world's most powerful graphic chip - Imagination"), '\n');
@@ -31,6 +33,6 @@ inquirer.prompt(
         choices: gameData
     }],
     function(answers) {
-        var Game = require(__dirname+'/src/Game.js');
+        var Game = new gameEngine(db);
         Game.play(answers.game);
     });
