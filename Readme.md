@@ -23,7 +23,7 @@ $ zonk
 
 ## For players
 Pick a Game script to start off. 
-![player demo](https://raw.githubusercontent.com/thehobbit85/zonk/master/demos/demo_player.gif)
+![player demo](https://github.com/thehobbit85/zonk/master/demos/demo_player.gif)
 
 You will be shown help instructions before you start the game. At any point, you can type `help` to get help.
 
