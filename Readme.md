@@ -1,17 +1,17 @@
-# Zonk 
+# Zonk
 
 Text Based Adventure Games built with Node.js
 
 > "_It runs on the world's most powerful graphic chip - Imagination_" - Sheldon Cooper
 
-This module is inspired by amazing text based adventure games like [Zork](http://www.infocom-if.org/downloads/downloads.html). 
+This module is inspired by amazing text based adventure games like [Zork](http://www.infocom-if.org/downloads/downloads.html).
 
-The game engine is still in active development and supports only basic features. 
+The game engine is still in active development and supports only basic features.
 
 _Pull requests and Game Scripts welcome!_
 
 ## Installation
-Run 
+Run
 ```bash
 $ [sudo] npm install -g zonk
 ```
@@ -22,7 +22,7 @@ $ zonk
 ```
 
 ## For players
-Pick a Game script to start off. 
+Pick a Game script to start off.
 ![player demo](https://raw.githubusercontent.com/arvindr21/cli-adventure-games/master/demos/demo_player.gif)
 
 You will be shown help instructions before you start the game. At any point, you can type `help` to get help.
@@ -48,7 +48,7 @@ To create your own game script, please refer to the `Maya.json` in the `Games` f
 There are currently 2 options regarding the saving and restoring of games.
 1. A local json file, if this is option you want, put the next line in the start.js file:
   var db = require(__dirname + '/src/DataBases/fileSystem.js');
-2. A remote mongoDB saving system, if this the option you want, put the next line: 
+2. A remote mongoDB saving system, if this the option you want, put the next line:
 var db = require(__dirname + '/src/DataBases/mongodb.js');
 
 In order to use the mongoDB option you need to create the file mongodb-settings.json and put it in src/DataBases with the following data:
@@ -61,7 +61,7 @@ In order to use the mongoDB option you need to create the file mongodb-settings.
 }
 ```
 
-#### Todos :  
+#### Todos :
 * [ ] After restoring a game there is a bug that causes problems with input
 * [ ] Add more database options for saving games.
 * [ ] Create a better interface for choosing the database.

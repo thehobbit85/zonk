@@ -114,7 +114,7 @@ Game.prototype.executer = function(room) {
   self.currentRoom = room;
 
   var text = processLineToBlock(_r.description,80,80);
-  
+  //var text = _r.description;
   if ((_r.isExitRoom && _r.isExitRoom.toString()) === "true") {
     console.log(text);
     return false;
